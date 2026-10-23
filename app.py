@@ -4,7 +4,8 @@ from flask import Flask, render_template, jsonify
 
 app = Flask(__name__)
 
-DATA_PATH = os.path.join(os.path.dirname(__file__), "data", "models.json")
+# Resolve data path relative to this file — works locally and on Vercel
+DATA_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "data", "models.json")
 
 
 def load_models():
