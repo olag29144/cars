@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>RODR | DESIGN — Porsche 911</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,300;0,400;0,500;0,600;1,300&family=Barlow+Condensed:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" />
+</head>
+<body>
+
+  <div class="page">
+
+    <!-- ── Wordmark ─────────────────────────────── -->
+    <header class="wordmark-row">
+      <span class="wordmark">RODR <em>|</em> DESIGN</span>
+    </header>
+
+    <!-- ── Card ─────────────────────────────────── -->
+    <div class="card">
+
+      <!-- Left nav rail -->
+      <nav class="rail" aria-label="Select model">
+        <ul>
+          {% for model in models %}
+          <li>
+            <button
+              class="pip{% if loop.first %} pip--on{% endif %}"
+              data-id="{{ model.id }}"
+              data-start="{{ model.scene_start }}"
+              data-end="{{ model.scene_end }}"
+              aria-label="{{ model.full_title }}"
+              aria-pressed="{{ 'true' if loop.first else 'false' }}"
+            >{{ model.label }}</button>
+          </li>
+          {% endfor %}
+        </ul>
+      </nav>
+
+      <!-- Stage: video + overlaid text -->
+      <!-- data-bg is set by JS on every model switch; CSS bg-* rules consume it -->
+      <div class="stage" id="stage" data-bg="{{ models[0].background }}">
+
+        <video
+          id="vid"
+          src="{{ url_for('static', filename='assets/video/porsche-showcase.mp4') }}"
+          width="820" height="460"
+          muted playsinline preload="auto"
+          aria-hidden="true"
+        ></video>
+
+        <!-- top title overlay -->
+        <div class="top-bar">
+          {% for model in models %}
+          <div class="title-block{% if loop.first %} title-block--on{% endif %}" data-id="{{ model.id }}">
+            <span class="t-make">{{ model.title }}</span>
+            <span class="t-model">{{ model.subtitle }}</span>
+          </div>
+          {% endfor %}
+        </div>
+
+        <!-- bottom spec overlay -->
+        <div class="bot-bar">
+          {% for model in models %}
+          <div class="spec-block{% if loop.first %} spec-block--on{% endif %}" data-id="{{ model.id }}">
+            {% for s in model.specs %}
+            <div class="spec">
+              <span class="s-label">{{ s.label }}</span>
+              <span class="s-val">{{ s.value }}</span>
+            </div>
+            {% endfor %}
+          </div>
+          {% endfor %}
+        </div>
+
+        <!-- scene-change wipe -->
+        <div class="wipe" id="wipe"></div>
+
+      </div><!-- /.stage -->
+
+    </div><!-- /.card -->
+
+  </div><!-- /.page -->
+
+  <script id="data" type="application/json">{{ models | tojson }}</script>
+  <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>

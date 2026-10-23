@@ -1,0 +1,90 @@
+[
+  {
+    "id": "f-series",
+    "label": "01",
+    "title": "Porsche 911",
+    "subtitle": "F Series",
+    "full_title": "Porsche 911 F Series",
+    "years": "1963 – 1973",
+    "engine": "2.0L Flat-6",
+    "power": "130 PS",
+    "drive": "RWD",
+    "color": "red",
+    "color_name": "Guards Red",
+    "scene_start": 0.0,
+    "scene_end": 3.0,
+    "background": "mountain-road",
+    "specs": [
+      { "label": "Years", "value": "1963 – 1973" },
+      { "label": "Engine", "value": "2.0L Flat-6" },
+      { "label": "Output", "value": "130 PS" },
+      { "label": "Drive", "value": "RWD" }
+    ]
+  },
+  {
+    "id": "964",
+    "label": "02",
+    "title": "Porsche 911",
+    "subtitle": "(964)",
+    "full_title": "Porsche 911 (964)",
+    "years": "1989 – 1994",
+    "engine": "3.6L Flat-6",
+    "power": "250 PS",
+    "drive": "AWD",
+    "color": "silver",
+    "color_name": "Arctic Silver",
+    "scene_start": 3.0,
+    "scene_end": 6.0,
+    "background": "winding-road",
+    "specs": [
+      { "label": "Years", "value": "1989 – 1994" },
+      { "label": "Engine", "value": "3.6L Flat-6" },
+      { "label": "Output", "value": "250 PS" },
+      { "label": "Drive", "value": "AWD" }
+    ]
+  },
+  {
+    "id": "993",
+    "label": "03",
+    "title": "Porsche 911",
+    "subtitle": "(993)",
+    "full_title": "Porsche 911 (993)",
+    "years": "1993 – 1998",
+    "engine": "3.6L Flat-6",
+    "power": "272 PS",
+    "drive": "RWD",
+    "color": "silver",
+    "color_name": "Polar Silver",
+    "scene_start": 6.0,
+    "scene_end": 9.0,
+    "background": "desert-plain",
+    "specs": [
+      { "label": "Years", "value": "1993 – 1998" },
+      { "label": "Engine", "value": "3.6L Flat-6" },
+      { "label": "Output", "value": "272 PS" },
+      { "label": "Drive", "value": "RWD" }
+    ]
+  },
+  {
+    "id": "orange",
+    "label": "04",
+    "title": "Porsche 911",
+    "subtitle": "Carrera RS",
+    "full_title": "Porsche 911 Carrera RS",
+    "years": "1972 – 1973",
+    "engine": "2.7L Flat-6",
+    "power": "210 PS",
+    "drive": "RWD",
+    "color": "orange",
+    "color_name": "Tangerine Orange",
+    "scene_start": 9.0,
+    "scene_end": 12.0,
+    "background": "sunset-field",
+    "specs": [
+      { "label": "Years", "value": "1972 – 1973" },
+      { "label": "Engine", "value": "2.7L Flat-6" },
+      { "label": "Output", "value": "210 PS" },
+      { "label": "Drive", "value": "RWD" }
+    ]
+  }
+]

@@ -1,0 +1,440 @@
+/* ═══════════════════════════════════════════════════════════
+   RODR | DESIGN  ·  Porsche 911 Showcase
+   ═══════════════════════════════════════════════════════════ */
+
+/* ── Tokens ──────────────────────────────────────────────── */
+/*  Colours corrected to match spec §4.1 reference values     */
+:root {
+  --bg:           #DCCDB1;      /* spec §4.1a  warm sand canvas   */
+  --card:         #F8F5EC;      /* spec §4.1b  ivory panel        */
+  --card-edge:    #E8E2D6;      /* subtle panel border            */
+  --ink:          #242321;      /* spec §4.1c  dark charcoal      */
+  --ink-mid:      #777164;      /* spec §4.1d  muted gray-brown   */
+  --ink-dim:      #A89E90;      /* tertiary / spec labels         */
+  --pip-idle:     rgba(36,35,33,0.10);
+  --pip-idle-bdr: rgba(36,35,33,0.22);
+  --pip-on-bg:    #242321;
+  --pip-on-fg:    #F8F5EC;
+  --shadow-soft:  rgba(60,44,22,0.16);
+  --shadow-xs:    rgba(60,44,22,0.08);
+  --rail-w:       54px;
+  --r-card:       20px;
+  --r-pip:        50px;
+  --ease:         cubic-bezier(.4,0,.2,1);
+  --t-fast:       160ms;
+  --t-mid:        360ms;
+  --t-slow:       600ms;
+  --font-ui:      'Inter', system-ui, sans-serif;
+  --font-disp:    'Barlow Condensed', 'Inter Condensed', sans-serif;
+}
+
+/* ── Reset ───────────────────────────────────────────────── */
+*,*::before,*::after { box-sizing:border-box; margin:0; padding:0; }
+html { font-size:16px; -webkit-text-size-adjust:100%; }
+body {
+  font-family: var(--font-ui);
+  background: var(--bg);
+  color: var(--ink);
+  min-height: 100dvh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+ul { list-style: none; }
+button { cursor:pointer; border:none; background:none; font:inherit; }
+button:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 3px;
+  border-radius: var(--r-pip);
+}
+
+/* ── Page wrapper ────────────────────────────────────────── */
+/*  spec §4.3e / §9a: keep page canvas wide, card compact     */
+.page {
+  width: 100%;
+  max-width: 1200px;          /* canvas can breathe on large screens */
+  padding: 52px 24px 60px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 22px;
+}
+
+/* ── Wordmark ────────────────────────────────────────────── */
+.wordmark-row {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.wordmark {
+  font-family: var(--font-disp);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: .30em;
+  text-transform: uppercase;
+  color: var(--ink);
+  opacity: .75;
+  user-select: none;
+}
+
+.wordmark em {
+  font-style: normal;
+  opacity: .40;
+  margin: 0 5px;
+  font-weight: 300;
+}
+
+/* ── Card ────────────────────────────────────────────────── */
+/*  spec §5.3f / §9d: enforce aspect-ratio to preserve the    */
+/*  square-ish reference panel; max-width keeps it compact    */
+.card {
+  width: 100%;
+  max-width: 780px;           /* spec §4.3e: compact floating panel  */
+  aspect-ratio: 4 / 3;       /* spec §9d: enforced proportional ratio */
+  background: var(--card);
+  border-radius: var(--r-card);
+  border: 1px solid var(--card-edge);
+  box-shadow:
+    0 2px 8px  var(--shadow-xs),
+    0 8px 32px var(--shadow-soft),
+    0 24px 64px rgba(60,44,22,.10);
+  display: grid;
+  grid-template-columns: var(--rail-w) 1fr;
+  overflow: hidden;
+  position: relative;
+}
+
+/* Subtle inner glow top-right */
+.card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse 70% 50% at 72% 12%,
+    rgba(255,252,245,.50) 0%, transparent 70%);
+  pointer-events: none;
+  z-index: 0;
+  border-radius: var(--r-card);
+}
+
+/* ── Nav Rail ────────────────────────────────────────────── */
+.rail {
+  position: relative;
+  z-index: 4;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 32px 0 24px;
+  border-right: 1px solid rgba(160,148,130,.28);
+}
+
+.rail ul {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 9px;
+}
+
+/* pill navigation button */
+.pip {
+  width: 28px;
+  height: 28px;
+  border-radius: var(--r-pip);
+  border: 1px solid var(--pip-idle-bdr);
+  background: var(--pip-idle);
+  color: var(--ink-mid);
+  font-family: var(--font-disp);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: .03em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition:
+    background var(--t-fast) var(--ease),
+    border-color var(--t-fast) var(--ease),
+    color var(--t-fast) var(--ease),
+    transform var(--t-fast) var(--ease),
+    box-shadow var(--t-fast) var(--ease);
+}
+
+.pip:hover {
+  background: rgba(36,35,33,.08);
+  border-color: rgba(36,35,33,.36);
+  color: var(--ink);
+  transform: scale(1.08);
+}
+
+.pip--on {
+  background: var(--pip-on-bg);
+  border-color: var(--pip-on-bg);
+  color: var(--pip-on-fg);
+  transform: scale(1.10);
+  box-shadow: 0 2px 10px rgba(36,35,33,.28);
+}
+
+.pip--on:hover {
+  background: #3a3835;
+  border-color: #3a3835;
+  transform: scale(1.10);
+}
+
+/* ── Stage ───────────────────────────────────────────────── */
+/*  spec §9d: stage fills the card's grid cell completely      */
+.stage {
+  position: relative;
+  z-index: 2;
+  overflow: hidden;
+  /* background transitions per model — driven by data-bg attr */
+  transition: background-color var(--t-slow) var(--ease);
+}
+
+/* ── Per-model scenic backgrounds (spec §7 / §10c) ──────── */
+/*  Applied via data-bg attribute on .stage; JS updates it     */
+/*  on every model switch. Each maps to a muted colour that    */
+/*  shows through while the video loads and as a tint layer.   */
+.stage[data-bg="mountain-road"]  { background-color: #C8BAA8; }
+.stage[data-bg="winding-road"]   { background-color: #B8BEB4; }
+.stage[data-bg="desert-plain"]   { background-color: #C4B89C; }
+.stage[data-bg="sunset-field"]   { background-color: #C8A882; }
+
+/* ── Video (spec §13b: explicit dimensions prevent reflow) ── */
+#vid {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  display: block;
+  z-index: 1;
+  /* prevent flash-of-unstyled layout before metadata loads */
+  background: transparent;
+}
+
+/* ── Top bar — title overlay ─────────────────────────────── */
+.top-bar {
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  z-index: 10;
+  background: linear-gradient(to bottom,
+    rgba(14,12,10,.78) 0%,
+    rgba(14,12,10,.50) 40%,
+    rgba(14,12,10,.18) 70%,
+    transparent 100%);
+  padding: 22px 26px 52px;
+  pointer-events: none;
+}
+
+.title-block {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 20px 26px 0;
+  gap: 4px;
+  opacity: 0;
+  transform: translateY(-7px);
+  transition:
+    opacity var(--t-mid) var(--ease),
+    transform var(--t-mid) var(--ease);
+  pointer-events: none;
+}
+
+.title-block--on {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* "Porsche 911" — small tracking label */
+.t-make {
+  font-family: var(--font-disp);
+  font-size: 11px;
+  font-weight: 400;
+  letter-spacing: .28em;
+  text-transform: uppercase;
+  color: rgba(255,248,234,.68);
+  text-shadow: 0 1px 5px rgba(0,0,0,.50);
+  line-height: 1;
+}
+
+/* "F Series" / "(964)" / "(993)" — hero variant */
+.t-model {
+  font-family: var(--font-disp);
+  font-size: 30px;
+  font-weight: 600;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  color: #FFFFFF;
+  line-height: 1.05;
+  text-shadow:
+    0 1px 8px rgba(0,0,0,.55),
+    0 4px 24px rgba(0,0,0,.30);
+}
+
+/* ── Bottom bar — spec overlay ───────────────────────────── */
+.bot-bar {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  z-index: 10;
+  background: linear-gradient(to top,
+    rgba(14,12,10,.78) 0%,
+    rgba(14,12,10,.50) 40%,
+    rgba(14,12,10,.18) 70%,
+    transparent 100%);
+  padding: 52px 26px 22px;
+  pointer-events: none;
+}
+
+.spec-block {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding: 0 26px 22px;
+  opacity: 0;
+  transform: translateY(7px);
+  transition:
+    opacity var(--t-mid) var(--ease),
+    transform var(--t-mid) var(--ease);
+  pointer-events: none;
+}
+
+.spec-block--on {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.spec {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  padding: 0 20px;
+  position: relative;
+}
+
+/* divider between adjacent specs */
+.spec + .spec::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 1px;
+  height: 24px;
+  background: rgba(255,248,234,.22);
+}
+
+.s-label {
+  font-family: var(--font-disp);
+  font-size: 9px;
+  font-weight: 400;
+  letter-spacing: .22em;
+  text-transform: uppercase;
+  color: rgba(255,248,234,.58);
+  text-shadow: 0 1px 4px rgba(0,0,0,.45);
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.s-val {
+  font-family: var(--font-disp);
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: .05em;
+  color: #FFFFFF;
+  text-shadow:
+    0 1px 6px rgba(0,0,0,.55),
+    0 3px 16px rgba(0,0,0,.28);
+  line-height: 1.15;
+  white-space: nowrap;
+}
+
+/* ── Scene wipe overlay ──────────────────────────────────── */
+.wipe {
+  position: absolute;
+  inset: 0;
+  z-index: 20;
+  background: var(--card);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--t-mid) var(--ease);
+}
+
+.wipe--in { opacity: 1; }
+
+/* ── Loading shimmer ─────────────────────────────────────── */
+.card--loading .stage::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 30;
+  background: linear-gradient(110deg,
+    var(--card) 40%,
+    var(--card-edge) 50%,
+    var(--card) 60%);
+  background-size: 200% 100%;
+  animation: shimmer 1.4s linear infinite;
+}
+
+@keyframes shimmer {
+  from { background-position: 200% 0; }
+  to   { background-position: -200% 0; }
+}
+
+/* ── Reduced motion ──────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  .title-block, .spec-block, .wipe, .pip, .stage {
+    transition: none;
+  }
+  .card--loading .stage::after { animation: none; }
+}
+
+/* ── Responsive: tablet (≤ 680px) ───────────────────────── */
+@media (max-width: 680px) {
+  .page { padding: 32px 14px 40px; gap: 16px; }
+
+  :root { --rail-w: 44px; }
+
+  .card {
+    max-width: 100%;
+    aspect-ratio: 4 / 3;   /* maintain ratio at all sizes */
+    border-radius: 14px;
+  }
+
+  .pip { width: 24px; height: 24px; font-size: 9px; }
+
+  .t-model { font-size: 22px; }
+  .s-val   { font-size: 13px; }
+  .spec    { padding: 0 14px; }
+}
+
+/* ── Responsive: mobile (≤ 420px) ───────────────────────── */
+@media (max-width: 420px) {
+  .page { padding: 20px 10px 28px; gap: 12px; }
+
+  :root { --rail-w: 36px; --r-card: 12px; }
+
+  /* on very small screens allow slight height flexibility */
+  .card  { aspect-ratio: auto; min-height: 280px; }
+
+  .pip { width: 20px; height: 20px; font-size: 8px; }
+  .rail ul { gap: 7px; }
+
+  .wordmark  { font-size: 9px; letter-spacing: .22em; }
+  .t-make    { font-size: 10px; }
+  .t-model   { font-size: 18px; }
+  .s-label   { font-size: 8px; letter-spacing: .16em; }
+  .s-val     { font-size: 11px; }
+  .spec      { padding: 0 10px; }
+  .spec-block { padding: 0 14px 16px; }
+  .top-bar    { padding: 16px 18px 40px; }
+  .bot-bar    { padding: 40px 18px 16px; }
+  .title-block { padding: 14px 18px 0; }
+}
